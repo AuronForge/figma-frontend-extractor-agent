@@ -107,11 +107,22 @@ export default async function handler(req, res) {
       componentsData = figmaService.extractComponents(fileData);
     }
 
+    // Limitar número de componentes para evitar payload muito grande
+    const maxComponents = options?.maxComponents || 10;
+    if (componentsData.components && componentsData.components.length > maxComponents) {
+      console.log(
+        `Limiting components from ${componentsData.components.length} to ${maxComponents}`
+      );
+      componentsData.components = componentsData.components.slice(0, maxComponents);
+    }
+
     // Extrair estilos
     const styles = figmaService.extractStyles(fileData);
 
     // Gerar código com IA
-    console.log(`Generating ${framework} code using ${aiProvider}`);
+    console.log(
+      `Generating ${framework} code using ${aiProvider} with ${componentsData.components?.length || 0} components`
+    );
     const generatedCode = await designAgent.analyzeAndGenerateCode(componentsData, framework, {
       ...options,
       componentName: componentName || 'GeneratedComponent',

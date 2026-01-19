@@ -23,9 +23,14 @@ class FigmaService {
       });
       return response.data;
     } catch (error) {
-      throw new Error(
-        `Failed to fetch Figma file: ${error.response?.data?.message || error.message}`
-      );
+      const errorDetails = error.response?.data || error.message;
+      console.error('Figma API Error:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: errorDetails,
+        fileKey,
+      });
+      throw new Error(`Failed to fetch Figma file: ${JSON.stringify(errorDetails)}`);
     }
   }
 
