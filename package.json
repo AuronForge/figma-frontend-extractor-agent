@@ -1,0 +1,20 @@
+{
+  "name": "figma-frontend-extractor-agent",
+  "version": "1.0.0",
+  "description": "AI-powered agent that extracts Figma designs and converts them into frontend code skeletons. Analyzes design components, layout structures, and styles to generate React/Vue/HTML boilerplate with proper component hierarchy and styling foundation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AuronForge/figma-frontend-extractor-agent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AuronForge/figma-frontend-extractor-agent/issues"
+  },
+  "homepage": "https://github.com/AuronForge/figma-frontend-extractor-agent#readme"
+}
