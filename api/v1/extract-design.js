@@ -40,7 +40,12 @@
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-export default function handler(req, res) {
+
+import { v4 as uuidv4 } from 'uuid';
+import FigmaService from '../../src/services/figmaService.js';
+import DesignAnalyzerAgent from '../../src/agents/designAnalyzerAgent.js';
+
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({
       success: false,
@@ -48,13 +53,101 @@ export default function handler(req, res) {
     });
   }
 
-  // TODO: Implementar lógica de extração do Figma
-  res.status(200).json({
-    success: true,
-    message: 'Design extraction endpoint - To be implemented',
-    data: {
-      fileKey: req.body?.fileKey || 'example',
-      framework: req.body?.framework || 'react',
-    },
-  });
+  try {
+    // Validar entrada
+    const { fileKey, framework, nodeId, componentName, options = {} } = req.body;
+
+    if (!fileKey || !framework) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields',
+        details: 'fileKey and framework are required',
+      });
+    }
+
+    if (!['react', 'vue', 'angular', 'html'].includes(framework)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid framework',
+        details: 'framework must be one of: react, vue, angular, html',
+      });
+    }
+
+    // Obter token do Figma
+    const figmaToken = process.env.FIGMA_ACCESS_TOKEN;
+    if (!figmaToken) {
+      return res.status(401).json({
+        success: false,
+        error: 'Figma access token not configured',
+        details: 'Please set FIGMA_ACCESS_TOKEN in environment variables',
+      });
+    }
+
+    // Obter provider de IA do header
+    const aiProvider = req.headers['x-ai-provider'] || 'github';
+
+    // Inicializar serviços
+    const figmaService = new FigmaService(figmaToken);
+    const designAgent = new DesignAnalyzerAgent(aiProvider);
+
+    // Buscar arquivo do Figma
+    console.log(`Fetching Figma file: ${fileKey}`);
+    const fileData = await figmaService.getFile(fileKey);
+
+    // Extrair componentes
+    let componentsData;
+    if (nodeId) {
+      // Extrair apenas um nó específico
+      const nodeData = await figmaService.getNode(fileKey, nodeId);
+      componentsData = figmaService.extractComponents(nodeData);
+    } else {
+      // Extrair arquivo completo
+      componentsData = figmaService.extractComponents(fileData);
+    }
+
+    // Extrair estilos
+    const styles = figmaService.extractStyles(fileData);
+
+    // Gerar código com IA
+    console.log(`Generating ${framework} code using ${aiProvider}`);
+    const generatedCode = await designAgent.analyzeAndGenerateCode(componentsData, framework, {
+      ...options,
+      componentName: componentName || 'GeneratedComponent',
+    });
+
+    // Preparar resposta
+    const id = uuidv4();
+    const result = {
+      success: true,
+      id,
+      data: {
+        framework,
+        fileKey,
+        fileName: fileData.name,
+        nodeId: nodeId || null,
+        components: generatedCode.components || [],
+        globalStyles: generatedCode.globalStyles || '',
+        notes: generatedCode.notes || '',
+        extractedComponents: componentsData.components || [],
+        styles,
+      },
+      metadata: {
+        figmaFile: fileKey,
+        figmaVersion: fileData.version,
+        lastModified: fileData.lastModified,
+        provider: aiProvider,
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error('Extract design error:', error);
+
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to extract design',
+      details: error.message,
+    });
+  }
 }

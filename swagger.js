@@ -7,7 +7,7 @@ const options = {
       title: 'Figma Frontend Extractor Agent API',
       version: '1.0.0',
       description:
-        'API for extracting Figma designs and converting them into frontend code skeletons. Supports multiple AI providers (OpenAI, GitHub Models, Anthropic) to analyze design components and generate React/Vue/HTML boilerplate code.',
+        'API for extracting Figma designs and converting them into frontend code skeletons. Supports multiple AI providers (OpenAI, GitHub Models, Anthropic) to analyze design components and generate React/Vue/Angular/HTML boilerplate code.',
       contact: {
         name: 'API Support',
         url: 'https://github.com/AuronForge/figma-frontend-extractor-agent',
@@ -59,7 +59,7 @@ const options = {
             },
             framework: {
               type: 'string',
-              enum: ['react', 'vue', 'html'],
+              enum: ['react', 'vue', 'angular', 'html'],
               description: 'Target frontend framework',
               example: 'react',
             },
@@ -103,7 +103,7 @@ const options = {
             },
             framework: {
               type: 'string',
-              enum: ['react', 'vue', 'html'],
+              enum: ['react', 'vue', 'angular', 'html'],
               example: 'react',
             },
             pageId: {
