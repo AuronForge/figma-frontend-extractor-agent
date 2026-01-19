@@ -97,7 +97,28 @@ npm start
 
 The server will start at `http://localhost:3003` using Vercel Dev
 
-**Access the API Documentation:** `http://localhost:3003/api/v1/api-docs`
+### API Documentation
+
+📚 **Interactive Swagger Documentation:**
+
+- **Local**: http://localhost:3003/api/v1/api-docs
+- **Production**: https://figma-frontend-extractor-agent.vercel.app/api/v1/api-docs
+- **OpenAPI Spec**: http://localhost:3003/api/v1/swagger
+
+The API follows RESTful conventions and is fully documented with OpenAPI 3.0 specification. Use the Swagger UI to explore all endpoints, request/response schemas, and try out the API directly from your browser.
+
+### API Versioning
+
+All endpoints are versioned under `/api/v1/`. Legacy endpoints without version prefix are automatically redirected to the v1 endpoints for backward compatibility.
+
+**Available Endpoints:**
+
+- `GET /api/v1/health` - Health check and service status
+- `POST /api/v1/extract-design` - Extract Figma design components
+- `POST /api/v1/generate-code` - Generate frontend code from Figma
+- `GET /api/v1/generated-code` - Retrieve generated code entries
+- `GET /api/v1/swagger` - OpenAPI specification (JSON)
+- `GET /api/v1/api-docs` - Swagger UI documentation
 
 ### API Endpoints
 
@@ -105,6 +126,25 @@ The server will start at `http://localhost:3003` using Vercel Dev
 
 ```bash
 curl http://localhost:3003/api/v1/health
+```
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "service": "figma-frontend-extractor-agent",
+  "version": "1.0.0",
+  "apiVersion": "v1",
+  "timestamp": "2026-01-19T22:38:03.173Z",
+  "endpoints": {
+    "extractDesign": "/api/v1/extract-design",
+    "generateCode": "/api/v1/generate-code",
+    "generatedCode": "/api/v1/generated-code",
+    "swagger": "/api/v1/swagger",
+    "apiDocs": "/api/v1/api-docs"
+  }
+}
 ```
 
 #### Extract Figma Design
@@ -255,14 +295,7 @@ Deploy to Vercel:
 vercel deploy
 ```
 
-## API Documentation
-
-- **Local**: http://localhost:3003/api/v1/api-docs
-- **Production**: https://figma-frontend-extractor-agent.vercel.app/api/v1/api-docs
-
-### Postman Collection
-
-Import the complete API collection: [postman-collection.json](postman-collection.json)
+See [docs/DEPLOY.md](docs/DEPLOY.md) for complete deployment instructions and CI/CD setup.
 
 ## Use Cases
 
