@@ -24,6 +24,10 @@ database/*.json
 !database/.gitkeep
 .next/
 
+# Output files
+output/*
+!output/.gitkeep
+
 # IDE
 .vscode/
 .idea/

@@ -28,6 +28,10 @@
       "destination": "/api/v1/extract-design.js"
     },
     {
+      "source": "/api/v1/extract-project",
+      "destination": "/api/v1/extract-project.js"
+    },
+    {
       "source": "/api/v1/generate-code",
       "destination": "/api/v1/generate-code.js"
     },

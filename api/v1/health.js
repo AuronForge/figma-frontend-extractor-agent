@@ -80,6 +80,7 @@ export default function handler(req, res) {
       validateToken: '/api/v1/validate-token',
       listFiles: '/api/v1/list-files',
       extractDesign: '/api/v1/extract-design',
+      extractProject: '/api/v1/extract-project',
       generateCode: '/api/v1/generate-code',
       generatedCode: '/api/v1/generated-code',
       swagger: '/api/v1/swagger',
