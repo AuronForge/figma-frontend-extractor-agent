@@ -3,8 +3,37 @@
   "version": "1.0.0",
   "description": "AI-powered agent that extracts Figma designs and converts them into frontend code skeletons. Analyzes design components, layout structures, and styles to generate React/Vue/HTML boilerplate with proper component hierarchy and styling foundation.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "vercel dev --listen 3003",
+    "dev": "vercel dev --listen 3003",
+    "commit": "cz",
+    "format": "prettier --write \"**/*.{js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,json,md}\"",
+    "lint": "eslint src/ api/ tests/",
+    "lint:fix": "eslint src/ api/ tests/ --fix",
+    "prepare": "husky",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:patch": "standard-version --release-as patch",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -16,5 +45,26 @@
   "bugs": {
     "url": "https://github.com/AuronForge/figma-frontend-extractor-agent/issues"
   },
-  "homepage": "https://github.com/AuronForge/figma-frontend-extractor-agent#readme"
+  "homepage": "https://github.com/AuronForge/figma-frontend-extractor-agent#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
+    "@eslint/js": "^9.39.2",
+    "@types/jest": "^30.0.0",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "husky": "^9.1.7",
+    "jest": "^30.2.0",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.0",
+    "standard-version": "^9.5.0",
+    "zod": "^4.3.5"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "dotenv": "^17.2.3"
+  }
 }
