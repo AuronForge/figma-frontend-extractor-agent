@@ -1,0 +1,50 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api/v1/api-docs.js"
+    },
+    {
+      "source": "/api/v1/api-docs",
+      "destination": "/api/v1/api-docs.js"
+    },
+    {
+      "source": "/api/v1/extract-design",
+      "destination": "/api/v1/extract-design.js"
+    },
+    {
+      "source": "/api/v1/generate-code",
+      "destination": "/api/v1/generate-code.js"
+    },
+    {
+      "source": "/api/v1/generated-code",
+      "destination": "/api/v1/generated-code.js"
+    },
+    {
+      "source": "/api/v1/swagger",
+      "destination": "/api/v1/swagger.js"
+    },
+    {
+      "source": "/api/v1/docs",
+      "destination": "/api/v1/api-docs.js"
+    },
+    {
+      "source": "/docs",
+      "destination": "/api/v1/api-docs.js"
+    },
+    {
+      "source": "/api/v1/health",
+      "destination": "/api/v1/health.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
