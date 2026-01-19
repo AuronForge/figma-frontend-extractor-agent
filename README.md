@@ -114,8 +114,10 @@ All endpoints are versioned under `/api/v1/`. Legacy endpoints without version p
 **Available Endpoints:**
 
 - `GET /api/v1/health` - Health check and service status
+- `GET /api/v1/validate-token` - Validate Figma access token
 - `GET /api/v1/list-files` - List Figma files from team or project
 - `POST /api/v1/extract-design` - Extract Figma design components
+- `POST /api/v1/extract-project` - Extract entire project and generate JSON files
 - `POST /api/v1/generate-code` - Generate frontend code from Figma
 - `GET /api/v1/generated-code` - Retrieve generated code entries
 - `GET /api/v1/swagger` - OpenAPI specification (JSON)
@@ -139,12 +141,36 @@ curl http://localhost:3003/api/v1/health
   "apiVersion": "v1",
   "timestamp": "2026-01-19T22:38:03.173Z",
   "endpoints": {
+    "validateToken": "/api/v1/validate-token",
     "listFiles": "/api/v1/list-files",
     "extractDesign": "/api/v1/extract-design",
+    "extractProject": "/api/v1/extract-project",
     "generateCode": "/api/v1/generate-code",
     "generatedCode": "/api/v1/generated-code",
     "swagger": "/api/v1/swagger",
     "apiDocs": "/api/v1/api-docs"
+  }
+}
+```
+
+#### Validate Figma Token
+
+Check if your Figma access token is valid:
+
+```bash
+curl http://localhost:3003/api/v1/validate-token
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Figma token is valid",
+  "user": {
+    "id": "1075405301613636173",
+    "email": "user@example.com",
+    "handle": "User Name"
   }
 }
 ```
@@ -182,6 +208,8 @@ curl "http://localhost:3003/api/v1/list-files?project_id=YOUR_PROJECT_ID"
 
 #### Extract Figma Design
 
+Extract and analyze a specific Figma file or component:
+
 ```bash
 curl -X POST http://localhost:3003/api/v1/extract-design \
   -H "Content-Type: application/json" \
@@ -189,9 +217,137 @@ curl -X POST http://localhost:3003/api/v1/extract-design \
   -d '{
     "fileKey": "your-figma-file-key",
     "nodeId": "123:456",
-    "framework": "react"
+    "framework": "react",
+    "options": {
+      "includeStyles": true,
+      "maxComponents": 5
+    }
   }'
 ```
+
+#### Extract Project and Generate JSON Files
+
+Extract an entire Figma file and generate JSON specifications for development:
+
+**Option 1: Extract specific file by fileKey**
+
+```bash
+curl -X POST http://localhost:3003/api/v1/extract-project \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fileKey": "UijlTILMmeErA1cakxBBLU",
+    "figmaToken": "figd_your_figma_token",
+    "githubToken": "ghp_your_github_token",
+    "options": {
+      "frameworks": ["react", "html"],
+      "maxComponentsPerFile": 3,
+      "includeStyles": true,
+      "generateDocs": true
+    }
+  }'
+```
+
+**Option 2: Extract all files from a project**
+
+```bash
+curl -X POST http://localhost:3003/api/v1/extract-project \
+  -H "Content-Type: application/json" \
+  -d '{
+    "teamId": "1550518470816288684",
+    "projectId": "454737867",
+    "figmaToken": "figd_your_figma_token",
+    "githubToken": "ghp_your_github_token",
+    "options": {
+      "frameworks": ["react"],
+      "maxComponentsPerFile": 5,
+      "includeStyles": true,
+      "generateDocs": true
+    }
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "projectId": "454737867",
+  "fileKey": "UijlTILMmeErA1cakxBBLU",
+  "projectName": "Login App Prototype",
+  "teamId": "1550518470816288684",
+  "extractedAt": "2026-01-19T23:42:23.786Z",
+  "filesProcessed": 1,
+  "totalComponentsExtracted": 3,
+  "frameworks": ["react"],
+  "files": [
+    {
+      "fileName": "Login App Prototype",
+      "fileKey": "UijlTILMmeErA1cakxBBLU",
+      "frameworks": ["react"],
+      "componentsExtracted": 3,
+      "jsonPath": "Login-App-Prototype.json"
+    }
+  ],
+  "outputDirectory": "file-UijlTILMmeErA1cakxBBLU-1768866142256"
+}
+```
+
+**Output Structure:**
+
+The endpoint generates JSON files in the `output/` directory:
+
+```
+output/
+  file-UijlTILMmeErA1cakxBBLU-1768866142256/
+    ├── Login-App-Prototype.json      # Component specs + generated code
+    └── project-index.json             # Project metadata
+```
+
+**JSON File Contents:**
+
+```json
+{
+  "id": "12a558e9-3d1b-495c-bf1e-fecc91490304",
+  "fileName": "Login App Prototype",
+  "fileKey": "UijlTILMmeErA1cakxBBLU",
+  "extractedAt": "2026-01-19T23:42:22.625Z",
+  "components": [...],              // Extracted Figma components
+  "styles": {...},                  // Colors, typography, effects
+  "generatedCode": {
+    "react": {
+      "components": [
+        {
+          "name": "LoginUser",
+          "code": "import React...",  // Full React component code
+          "styles": ".container {...}",  // CSS/CSS modules
+          "dependencies": ["react"]
+        }
+      ],
+      "globalStyles": "...",
+      "notes": "..."
+    }
+  }
+}
+```
+
+**Parameters:**
+
+- `fileKey` (optional): Extract specific file (use this OR teamId+projectId)
+- `teamId` (optional): Figma team ID (required if not using fileKey)
+- `projectId` (optional): Figma project ID (required if not using fileKey)
+- `figmaToken` (required): Figma personal access token
+- `githubToken` (required): GitHub personal access token for AI generation
+- `options.frameworks`: Array of frameworks to generate code for (default: ["react"])
+- `options.maxComponentsPerFile`: Max components per file (default: 10, recommended: 2-3 for large files)
+- `options.includeStyles`: Include style extraction (default: true)
+- `options.generateDocs`: Generate project-index.json (default: true)
+
+**Use Cases:**
+
+1. **Single File Extraction**: Use `fileKey` to extract and generate code for a specific design file
+2. **Project Batch Processing**: Use `teamId` + `projectId` to process all files in a project
+3. **Developer Handoff**: Generated JSON files contain everything needed to develop the UI
+4. **Multi-framework Support**: Generate code for React, Vue, Angular, and HTML simultaneously
 
 #### Generate Frontend Code
 
@@ -347,6 +503,69 @@ npm test                  # Run all tests
 npm run test:coverage     # Run tests with coverage
 npm run test:watch        # Watch mode
 ```
+
+## Troubleshooting
+
+### Error 413: Payload Too Large
+
+If you encounter `Request failed with status code 413`, your Figma file has too many components:
+
+**Solution:**
+
+- Reduce `maxComponentsPerFile` to 2-3 in the options
+- Use `fileKey` to extract specific files instead of entire projects
+- Extract specific `nodeId` instead of the entire file
+
+```bash
+# Good - limits components
+curl -X POST http://localhost:3003/api/v1/extract-project \
+  -d '{"fileKey": "...", "options": {"maxComponentsPerFile": 2}}'
+```
+
+### Error 400: File Type Not Supported
+
+This error occurs when trying to extract FigJam files (whiteboards):
+
+**Solution:**
+
+- Only Figma design files are supported
+- Check if the file is a FigJam board (collaborative whiteboard)
+- Use regular Figma design files instead
+
+### Token Validation Issues
+
+Use the validate-token endpoint to diagnose token problems:
+
+```bash
+curl http://localhost:3003/api/v1/validate-token
+```
+
+**Common Issues:**
+
+- Token expired - generate a new token from Figma settings
+- Missing `FIGMA_ACCESS_TOKEN` in `.env` file
+- Invalid token format - ensure it starts with `figd_`
+
+## Best Practices
+
+### Component Extraction
+
+1. **Start Small**: Test with 2-3 components before processing large files
+2. **Use Specific Nodes**: Extract specific components using `nodeId` for better results
+3. **Framework Selection**: Choose the framework that matches your project stack
+
+### Performance
+
+1. **Batch Processing**: Use `extract-project` for multiple files
+2. **Output Management**: Clean up `output/` directory periodically
+3. **AI Provider**: Use GitHub Models (free) for development, OpenAI/Anthropic for production
+
+### Generated Code
+
+1. **Review First**: Always review generated code before using in production
+2. **Add Logic**: Generated code is a skeleton - add business logic and state management
+3. **Styling**: Generated styles are foundation - refine for your design system
+4. **Accessibility**: Verify and enhance ARIA labels and keyboard navigation
 
 ## Deployment
 
