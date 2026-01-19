@@ -44,6 +44,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import FigmaService from '../../src/services/figmaService.js';
 import DesignAnalyzerAgent from '../../src/agents/designAnalyzerAgent.js';
+import GeneratedCodeRepository from '../../src/repositories/generatedCodeRepository.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -89,6 +90,7 @@ export default async function handler(req, res) {
     // Inicializar serviços
     const figmaService = new FigmaService(figmaToken);
     const designAgent = new DesignAnalyzerAgent(aiProvider);
+    const repository = new GeneratedCodeRepository();
 
     // Buscar arquivo do Figma
     console.log(`Fetching Figma file: ${fileKey}`);
@@ -139,6 +141,8 @@ export default async function handler(req, res) {
         timestamp: new Date().toISOString(),
       },
     };
+    // Salvar no repositório
+    await repository.save(result);
 
     return res.status(200).json(result);
   } catch (error) {

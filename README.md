@@ -213,13 +213,24 @@ curl -X POST http://localhost:3003/api/v1/generate-code \
 #### List Generated Code
 
 ```bash
+# List all generated code
 curl http://localhost:3003/api/v1/generated-code
+
+# Get specific generated code by ID
+curl "http://localhost:3003/api/v1/generated-code?id=YOUR_CODE_ID"
+
+# Filter by file key
+curl "http://localhost:3003/api/v1/generated-code?fileKey=hlT4Sw9N8dd9bG2S1mUfxs"
+
+# Filter by framework
+curl "http://localhost:3003/api/v1/generated-code?framework=react"
 ```
 
 ### Supported Frameworks
 
 - **React** - JSX components with hooks
-- **Vue** - Single File Components (.vue)
+- **Vue** - Single File Components (.vue) with Composition API
+- **Angular** - Components with TypeScript and decorators
 - **HTML** - Semantic HTML5 with CSS
 
 ### API Examples
@@ -255,7 +266,24 @@ curl -X POST http://localhost:3003/api/v1/generate-code \
     "pageId": "1:2",
     "options": {
       "typescript": true,
-      "composition-api": true
+      "includeStyles": true
+    }
+  }'
+```
+
+#### Generate Angular Component
+
+```bash
+curl -X POST http://localhost:3003/api/v1/generate-code \
+  -H "Content-Type: application/json" \
+  -H "x-ai-provider: github" \
+  -d '{
+    "fileKey": "hlT4Sw9N8dd9bG2S1mUfxs",
+    "framework": "angular",
+    "options": {
+      "typescript": true,
+      "includeStyles": true,
+      "responsive": true
     }
   }'
 ```

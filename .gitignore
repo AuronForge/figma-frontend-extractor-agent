@@ -18,6 +18,10 @@ coverage/
 dist/
 build/
 .vercel
+
+# Database
+database/*.json
+!database/.gitkeep
 .next/
 
 # IDE
