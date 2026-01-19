@@ -114,6 +114,7 @@ All endpoints are versioned under `/api/v1/`. Legacy endpoints without version p
 **Available Endpoints:**
 
 - `GET /api/v1/health` - Health check and service status
+- `GET /api/v1/list-files` - List Figma files from team or project
 - `POST /api/v1/extract-design` - Extract Figma design components
 - `POST /api/v1/generate-code` - Generate frontend code from Figma
 - `GET /api/v1/generated-code` - Retrieve generated code entries
@@ -138,11 +139,43 @@ curl http://localhost:3003/api/v1/health
   "apiVersion": "v1",
   "timestamp": "2026-01-19T22:38:03.173Z",
   "endpoints": {
+    "listFiles": "/api/v1/list-files",
     "extractDesign": "/api/v1/extract-design",
     "generateCode": "/api/v1/generate-code",
     "generatedCode": "/api/v1/generated-code",
     "swagger": "/api/v1/swagger",
     "apiDocs": "/api/v1/api-docs"
+  }
+}
+```
+
+#### List Figma Files
+
+List all files from a Figma team or project:
+
+```bash
+# List files from a team
+curl "http://localhost:3003/api/v1/list-files?team_id=YOUR_TEAM_ID"
+
+# List files from a specific project
+curl "http://localhost:3003/api/v1/list-files?project_id=YOUR_PROJECT_ID"
+```
+
+**How to get IDs:**
+
+- **Team ID**: Go to Figma → Select your team → URL will be `/team/TEAM_ID/`
+- **Project ID**: Open a project → URL will be `/project/PROJECT_ID/`
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "source": "team",
+  "id": "1234567890",
+  "data": {
+    "name": "My Team",
+    "projects": [...]
   }
 }
 ```

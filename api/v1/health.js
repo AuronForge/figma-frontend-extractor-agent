@@ -77,6 +77,7 @@ export default function handler(req, res) {
     apiVersion: 'v1',
     timestamp: new Date().toISOString(),
     endpoints: {
+      listFiles: '/api/v1/list-files',
       extractDesign: '/api/v1/extract-design',
       generateCode: '/api/v1/generate-code',
       generatedCode: '/api/v1/generated-code',

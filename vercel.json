@@ -16,6 +16,10 @@
       "destination": "/api/v1/api-docs.js"
     },
     {
+      "source": "/api/v1/list-files",
+      "destination": "/api/v1/list-files.js"
+    },
+    {
       "source": "/api/v1/extract-design",
       "destination": "/api/v1/extract-design.js"
     },
