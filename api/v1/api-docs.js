@@ -115,12 +115,11 @@ export default function handler(req, res) {
             });
           } catch (error) {
             console.error('Error loading Swagger UI:', error);
-            loadingDiv.innerHTML = \`
-              <div class="error">
-                <h2>Error Loading Swagger Documentation</h2>
-                <pre>\${error.message}\\n\\nDebug Info:\\n- Spec URL: \${specUrl}\\n- Page URL: \${window.location.href}\`</pre>
-              </div>
-            \`;
+            const errorHtml = '<div class="error">' +
+              '<h2>Error Loading Swagger Documentation</h2>' +
+              '<pre>' + error.message + '\\n\\nDebug Info:\\n- Spec URL: ' + specUrl + '\\n- Page URL: ' + window.location.href + '</pre>' +
+              '</div>';
+            loadingDiv.innerHTML = errorHtml;
           }
         };
       </script>
