@@ -128,9 +128,9 @@ class ProjectExtractionService {
   /**
    * Create output directory
    */
-  async createOutputDirectory(fileKey, projectId) {
+  async createOutputDirectory(fileKey, projectId, fileName) {
     const dirName = fileKey
-      ? `file-${fileKey}-${Date.now()}`
+      ? `file-${sanitizeFileName(fileName)}-${Date.now()}`
       : `project-${projectId}-${Date.now()}`;
 
     const outputDir = path.join(process.cwd(), 'output', dirName);
@@ -209,8 +209,9 @@ class ProjectExtractionService {
       throw new ValidationError('No files found in the specified project or file');
     }
 
-    // Create output directory
-    const outputDir = await this.createOutputDirectory(fileKey, projectId);
+    // Create output directory with first file name
+    const firstFileName = files[0]?.name || 'unknown';
+    const outputDir = await this.createOutputDirectory(fileKey, projectId, firstFileName);
 
     // Process each file
     const outputFiles = [];

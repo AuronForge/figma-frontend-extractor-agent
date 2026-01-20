@@ -10,7 +10,7 @@ This agent specializes in bridging the gap between design and development. It co
 
 - ✅ **Figma API Integration** - Direct connection to Figma files and components
 - ✅ **Smart Component Extraction** - Identifies buttons, forms, cards, layouts automatically
-- ✅ **Multi-framework Support** - Generate React, Vue, or vanilla HTML/CSS
+- ✅ **Multi-framework Support** - Generate React, Vue, Angular, or vanilla HTML/CSS
 - ✅ **AI-powered Analysis** - Uses GPT-4o/Claude to understand design intent
 - ✅ **Component Hierarchy** - Maintains proper parent-child relationships
 - ✅ **Style Extraction** - Colors, typography, spacing, and layout properties
@@ -18,6 +18,48 @@ This agent specializes in bridging the gap between design and development. It co
 - ✅ **Multiple AI Providers** - OpenAI, GitHub Models (Free!), Anthropic
 - ✅ **RESTful API** - HTTP endpoints with Swagger documentation
 - ✅ **Auto-save** - Store extracted designs and generated code
+- ✅ **Layered Architecture** - Controllers, Services, Repositories pattern
+- ✅ **Error Handling** - Centralized error management with custom error classes
+- ✅ **Batch Processing** - Extract multiple files from projects
+
+## Architecture
+
+The application follows a clean layered architecture pattern for maintainability and scalability:
+
+```
+api/v1/                          # API Routes (Entry points)
+  ├── extract-project.js         # Project extraction endpoint
+  ├── extract-design.js          # Single design extraction
+  ├── validate-token.js          # Token validation
+  └── ...
+
+src/
+  ├── controllers/               # Request handling & validation
+  │   └── projectExtractionController.js
+  │
+  ├── services/                  # Business logic
+  │   ├── figmaService.js        # Figma API integration
+  │   └── projectExtractionService.js
+  │
+  ├── agents/                    # AI processing
+  │   └── designAnalyzerAgent.js # AI code generation
+  │
+  ├── repositories/              # Data persistence
+  │   └── generatedCodeRepository.js
+  │
+  └── utils/                     # Utilities & helpers
+      ├── errorHandler.js        # Error management
+      ├── validators.js          # Input validation
+      └── responseFormatter.js   # Response formatting
+```
+
+**Key Benefits:**
+
+- **Separation of Concerns**: Each layer has a specific responsibility
+- **Testability**: Easy to unit test individual components
+- **Reusability**: Services and utilities can be shared across endpoints
+- **Error Handling**: Centralized error management with custom error classes
+- **Maintainability**: Changes in one layer don't affect others
 
 ## Installation
 
@@ -566,6 +608,61 @@ curl http://localhost:3003/api/v1/validate-token
 2. **Add Logic**: Generated code is a skeleton - add business logic and state management
 3. **Styling**: Generated styles are foundation - refine for your design system
 4. **Accessibility**: Verify and enhance ARIA labels and keyboard navigation
+
+## Development
+
+### Project Structure
+
+```
+figma-frontend-extractor-agent/
+├── api/v1/                    # Serverless function endpoints
+├── src/
+│   ├── controllers/           # Request handlers
+│   ├── services/              # Business logic
+│   ├── agents/                # AI processing
+│   ├── repositories/          # Data access
+│   └── utils/                 # Shared utilities
+├── tests/                     # Test files
+├── output/                    # Generated JSON files (gitignored)
+├── database/                  # JSON storage (gitignored)
+└── docs/                      # Documentation
+```
+
+### Error Handling
+
+The application uses a centralized error handling system:
+
+- **Custom Error Classes**: `ValidationError`, `NotFoundError`, `UnauthorizedError`, `ExternalAPIError`
+- **Async Handler**: Wraps async route handlers to catch errors automatically
+- **Error Response Format**:
+  ```json
+  {
+    "success": false,
+    "error": "Error message",
+    "details": "Additional details"
+  }
+  ```
+
+### Adding New Endpoints
+
+1. Create controller in `src/controllers/`
+2. Create service in `src/services/` (if needed)
+3. Create route in `api/v1/`
+4. Use `asyncHandler` wrapper for error handling
+5. Add route to `vercel.json` and `api/v1/health.js`
+6. Update Swagger documentation
+
+**Example:**
+
+```javascript
+// api/v1/my-endpoint.js
+import MyController from '../../src/controllers/myController.js';
+import { asyncHandler } from '../../src/utils/errorHandler.js';
+
+export default asyncHandler(async (req, res) => {
+  return await MyController.handleRequest(req, res);
+});
+```
 
 ## Deployment
 
