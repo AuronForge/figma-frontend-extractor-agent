@@ -63,39 +63,39 @@ export default function handler(req, res) {
       <div id="loading" class="loading">
         <p>Loading Swagger UI...</p>
       </div>
-      
+
       <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js"></script>
       <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js"></script>
       <script>
         const specUrl = '${specUrl}';
-        
+
         console.log('Swagger Spec URL:', specUrl);
         console.log('Page URL:', window.location.href);
         console.log('Host:', window.location.host);
         console.log('Protocol:', window.location.protocol);
-        
+
         window.onload = async () => {
           const loadingDiv = document.getElementById('loading');
           const swaggerDiv = document.getElementById('swagger-ui');
-          
+
           try {
             // Fetch the spec to verify it's accessible
             const specResponse = await fetch(specUrl);
             console.log('Spec fetch response status:', specResponse.status);
-            
+
             if (!specResponse.ok) {
               throw new Error(\`Failed to fetch Swagger spec: \${specResponse.status} \${specResponse.statusText}\`);
             }
-            
+
             const specData = await specResponse.json();
             console.log('Spec loaded successfully');
             console.log('Spec servers:', specData.servers);
             console.log('Spec paths:', Object.keys(specData.paths));
-            
+
             // Hide loading, show Swagger UI
             loadingDiv.style.display = 'none';
             swaggerDiv.style.display = 'block';
-            
+
             // Initialize Swagger UI
             window.ui = SwaggerUIBundle({
               url: specUrl,
