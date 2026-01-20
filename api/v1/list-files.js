@@ -86,19 +86,84 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *   post:
+ *     summary: List Figma files from a project or team
+ *     description: Retrieves all Figma files (drafts and projects) accessible with the provided token. Requires team_id or project_id in request body.
+ *     tags:
+ *       - Design Extraction
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               figmaToken:
+ *                 type: string
+ *                 description: Figma access token (optional, uses env var if not provided)
+ *                 example: 'figo_...'
+ *               team_id:
+ *                 type: string
+ *                 description: Figma team ID to list files from
+ *                 example: '1234567890'
+ *               teamId:
+ *                 type: string
+ *                 description: Figma team ID to list files from (alternative camelCase)
+ *                 example: '1234567890'
+ *               project_id:
+ *                 type: string
+ *                 description: Figma project ID to list files from
+ *                 example: '9876543210'
+ *               projectId:
+ *                 type: string
+ *                 description: Figma project ID to list files from (alternative camelCase)
+ *                 example: '9876543210'
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved Figma files
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 source:
+ *                   type: string
+ *                   example: 'team'
+ *                 id:
+ *                   type: string
+ *                   example: '1234567890'
+ *                 data:
+ *                   type: object
+ *       400:
+ *         description: Bad request - missing team_id or project_id
+ *       401:
+ *         description: Unauthorized - invalid or missing Figma token
+ *       405:
+ *         description: Method not allowed
+ *       500:
+ *         description: Internal server error
  */
 
 import axios from 'axios';
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
+  if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({
       success: false,
       error: 'Method not allowed',
     });
   }
 
-  const { team_id, project_id } = req.query;
+  // Extract parameters from query (GET) or body (POST)
+  const params = req.method === 'GET' ? req.query : req.body || {};
+
+  // Support both snake_case and camelCase
+  const team_id = params.team_id || params.teamId;
+  const project_id = params.project_id || params.projectId;
+  const customFigmaToken = params.figmaToken;
 
   // Validação: precisa de pelo menos um dos parâmetros
   if (!team_id && !project_id) {
@@ -109,14 +174,15 @@ export default async function handler(req, res) {
     });
   }
 
-  // Obter token do Figma das variáveis de ambiente
-  const figmaToken = process.env.FIGMA_ACCESS_TOKEN;
+  // Obter token do Figma (prioridade: custom token do request > variáveis de ambiente)
+  const figmaToken = customFigmaToken || process.env.FIGMA_ACCESS_TOKEN;
 
   if (!figmaToken) {
     return res.status(401).json({
       success: false,
       error: 'Figma access token not configured',
-      details: 'Please set FIGMA_ACCESS_TOKEN in environment variables',
+      details:
+        'Please set FIGMA_ACCESS_TOKEN in environment variables or provide figmaToken in request',
     });
   }
 
