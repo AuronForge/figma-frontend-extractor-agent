@@ -15,7 +15,15 @@ class ProjectExtractionController {
    * Extract Figma project and generate JSON files
    */
   static async extractProject(req, res) {
-    const { fileKey, teamId, projectId, figmaToken, githubToken, options = {} } = req.body;
+    const {
+      fileKey,
+      teamId,
+      projectId,
+      figmaToken,
+      githubToken,
+      frameworks,
+      options = {},
+    } = req.body;
 
     // Validate required tokens
     if (!figmaToken || !githubToken) {
@@ -28,8 +36,8 @@ class ProjectExtractionController {
     }
 
     // Validate and set default options
-    const frameworks = options.frameworks || ['react'];
-    validateFrameworks(frameworks);
+    const validatedFrameworks = frameworks || options.frameworks || ['react'];
+    validateFrameworks(validatedFrameworks);
 
     const maxComponentsPerFile = validatePositiveInteger(
       options.maxComponentsPerFile,
@@ -50,7 +58,7 @@ class ProjectExtractionController {
       fileKey,
       teamId,
       projectId,
-      frameworks,
+      frameworks: validatedFrameworks,
       options: {
         maxComponentsPerFile,
         includeStyles,

@@ -1,0 +1,407 @@
+{
+  "info": {
+    "name": "Figma Frontend Extractor Agent",
+    "description": "AI-powered agent for extracting Figma designs and generating frontend code",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "figma-frontend-extractor-agent-url",
+      "value": "http://localhost:3003/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "figmaToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "githubToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testFileKey",
+      "value": "UijlTILMmeErA1cakxBBLU",
+      "type": "string"
+    },
+    {
+      "key": "testTeamId",
+      "value": "1550518470816288684",
+      "type": "string"
+    },
+    {
+      "key": "testProjectId",
+      "value": "454737867",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/health",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["health"]
+            },
+            "description": "Check if the API is running"
+          }
+        },
+        {
+          "name": "Swagger API Docs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/swagger/api-docs",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["swagger", "api-docs"]
+            },
+            "description": "View Swagger/OpenAPI documentation"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Figma",
+      "item": [
+        {
+          "name": "Validate Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/validate-token",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["validate-token"]
+            },
+            "description": "Validate Figma token and get user information"
+          }
+        },
+        {
+          "name": "List Files - By Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\",\n  \"teamId\": \"{{testTeamId}}\",\n  \"projectId\": \"{{testProjectId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/list-files",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["list-files"]
+            },
+            "description": "List all files in a Figma project"
+          }
+        },
+        {
+          "name": "List Files - By Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\",\n  \"teamId\": \"{{testTeamId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/list-files",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["list-files"]
+            },
+            "description": "List all projects and files in a Figma team"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extract Design",
+      "item": [
+        {
+          "name": "Extract Design - React",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\",\n  \"githubToken\": \"{{githubToken}}\",\n  \"fileKey\": \"{{testFileKey}}\",\n  \"framework\": \"react\",\n  \"options\": {\n    \"includeStyles\": true,\n    \"maxComponents\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/extract-design",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["extract-design"]
+            },
+            "description": "Extract design from Figma file and generate React code"
+          }
+        },
+        {
+          "name": "Extract Design - Vue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\",\n  \"githubToken\": \"{{githubToken}}\",\n  \"fileKey\": \"{{testFileKey}}\",\n  \"framework\": \"vue\",\n  \"options\": {\n    \"includeStyles\": true,\n    \"maxComponents\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/extract-design",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["extract-design"]
+            },
+            "description": "Extract design from Figma file and generate Vue code"
+          }
+        },
+        {
+          "name": "Extract Design - Angular",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\",\n  \"githubToken\": \"{{githubToken}}\",\n  \"fileKey\": \"{{testFileKey}}\",\n  \"framework\": \"angular\",\n  \"options\": {\n    \"includeStyles\": true,\n    \"maxComponents\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/extract-design",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["extract-design"]
+            },
+            "description": "Extract design from Figma file and generate Angular code"
+          }
+        },
+        {
+          "name": "Extract Design - HTML",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\",\n  \"githubToken\": \"{{githubToken}}\",\n  \"fileKey\": \"{{testFileKey}}\",\n  \"framework\": \"html\",\n  \"options\": {\n    \"includeStyles\": true,\n    \"maxComponents\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/extract-design",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["extract-design"]
+            },
+            "description": "Extract design from Figma file and generate HTML code"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extract Project",
+      "item": [
+        {
+          "name": "Extract Project - Single File",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\",\n  \"githubToken\": \"{{githubToken}}\",\n  \"fileKey\": \"{{testFileKey}}\",\n  \"frameworks\": [\"react\", \"vue\"],\n  \"maxComponentsPerFile\": 10\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/extract-project",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["extract-project"]
+            },
+            "description": "Extract single Figma file and generate code for multiple frameworks"
+          }
+        },
+        {
+          "name": "Extract Project - All Files",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\",\n  \"githubToken\": \"{{githubToken}}\",\n  \"teamId\": \"{{testTeamId}}\",\n  \"projectId\": \"{{testProjectId}}\",\n  \"frameworks\": [\"html\"],\n  \"maxComponentsPerFile\": 3\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/extract-project",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["extract-project"]
+            },
+            "description": "Extract all files from a Figma project and generate JSON specifications"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Code Generation",
+      "item": [
+        {
+          "name": "Generate Code - React",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\",\n  \"githubToken\": \"{{githubToken}}\",\n  \"fileKey\": \"{{testFileKey}}\",\n  \"framework\": \"react\",\n  \"options\": {\n    \"includeStyles\": true,\n    \"maxComponents\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/generate-code",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["generate-code"]
+            },
+            "description": "Generate React code from Figma file and save to database"
+          }
+        },
+        {
+          "name": "Generate Code - Vue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"figmaToken\": \"{{figmaToken}}\",\n  \"githubToken\": \"{{githubToken}}\",\n  \"fileKey\": \"{{testFileKey}}\",\n  \"framework\": \"vue\",\n  \"options\": {\n    \"includeStyles\": true,\n    \"maxComponents\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/generate-code",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["generate-code"]
+            },
+            "description": "Generate Vue code from Figma file and save to database"
+          }
+        },
+        {
+          "name": "Get Generated Code - All",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/generated-code",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["generated-code"]
+            },
+            "description": "Get all generated code entries from database"
+          }
+        },
+        {
+          "name": "Get Generated Code - By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/generated-code?id=<generated-id>",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["generated-code"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "<generated-id>",
+                  "description": "Replace with actual generated code ID"
+                }
+              ]
+            },
+            "description": "Get specific generated code entry by ID"
+          }
+        },
+        {
+          "name": "Get Generated Code - By File Key",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/generated-code?fileKey={{testFileKey}}",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["generated-code"],
+              "query": [
+                {
+                  "key": "fileKey",
+                  "value": "{{testFileKey}}"
+                }
+              ]
+            },
+            "description": "Get all generated code for a specific Figma file"
+          }
+        },
+        {
+          "name": "Get Generated Code - By Framework",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{figma-frontend-extractor-agent-url}}/generated-code?framework=react",
+              "host": ["{{figma-frontend-extractor-agent-url}}"],
+              "path": ["generated-code"],
+              "query": [
+                {
+                  "key": "framework",
+                  "value": "react",
+                  "description": "react, vue, angular, or html"
+                }
+              ]
+            },
+            "description": "Get all generated code for a specific framework"
+          }
+        }
+      ]
+    }
+  ]
+}

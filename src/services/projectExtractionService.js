@@ -136,7 +136,7 @@ class ProjectExtractionService {
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-    const datetime = `${day}-${month}-${year}-${hours}-${minutes}-${seconds}`;
+    const datetime = `${day}-${month}-${year}-${hours}h${minutes}m${seconds}s`;
 
     const dirName = fileKey
       ? `file-${sanitizeFileName(fileName)}-${datetime}`
