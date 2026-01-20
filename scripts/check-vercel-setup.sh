@@ -17,12 +17,12 @@ NC='\033[0m' # No Color
 # Verifica se o arquivo .vercel/project.json existe
 if [ -f ".vercel/project.json" ]; then
     echo -e "${GREEN}✓${NC} Arquivo .vercel/project.json encontrado"
-    
+
     # Extrai os IDs
     ORG_ID=$(cat .vercel/project.json | grep -o '"orgId":"[^"]*' | cut -d'"' -f4)
     PROJECT_ID=$(cat .vercel/project.json | grep -o '"projectId":"[^"]*' | cut -d'"' -f4)
     PROJECT_NAME=$(cat .vercel/project.json | grep -o '"projectName":"[^"]*' | cut -d'"' -f4)
-    
+
     echo ""
     echo "📋 Informações do Projeto:"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
