@@ -278,7 +278,16 @@ const options = {
       },
     },
   },
-  apis: [join(__dirname, 'api', 'v1', '*.js'), join(__dirname, 'src', '**', '*.js')],
+  apis: [
+    join(__dirname, 'api', 'v1', 'health.js'),
+    join(__dirname, 'api', 'v1', 'validate-token.js'),
+    join(__dirname, 'api', 'v1', 'list-files.js'),
+    join(__dirname, 'api', 'v1', 'extract-design.js'),
+    join(__dirname, 'api', 'v1', 'extract-project.js'),
+    join(__dirname, 'api', 'v1', 'generate-code.js'),
+    join(__dirname, 'api', 'v1', 'generated-code.js'),
+    join(__dirname, 'api', 'v1', 'swagger-debug.js'),
+  ],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
