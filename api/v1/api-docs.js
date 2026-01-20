@@ -6,6 +6,11 @@ export default function handler(req, res) {
     });
   }
 
+  // Build the absolute URL for the Swagger spec
+  const host = req.headers.host || 'localhost:3003';
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const specUrl = `${protocol}://${host}/api/v1/swagger`;
+
   const html = `
     <!DOCTYPE html>
     <html lang="en">
@@ -28,7 +33,7 @@ export default function handler(req, res) {
       <script>
         window.onload = () => {
           window.ui = SwaggerUIBundle({
-            url: '/api/v1/swagger',
+            url: '${specUrl}',
             dom_id: '#swagger-ui',
             deepLinking: true,
             presets: [
