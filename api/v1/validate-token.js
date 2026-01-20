@@ -45,12 +45,44 @@
  *                   type: string
  *       405:
  *         description: Method not allowed
+ *   post:
+ *     summary: Validate Figma access token
+ *     description: Validates if the configured Figma access token is valid and has proper permissions
+ *     tags:
+ *       - Health
+ *     responses:
+ *       200:
+ *         description: Token is valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Figma token is valid
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     handle:
+ *                       type: string
+ *       401:
+ *         description: Token is invalid or not configured
+ *       405:
+ *         description: Method not allowed
  */
 
 import axios from 'axios';
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
+  if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({
       success: false,
       error: 'Method not allowed',
